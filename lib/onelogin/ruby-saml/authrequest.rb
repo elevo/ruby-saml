@@ -122,11 +122,15 @@ module OneLogin
           issuer.text = settings.issuer
         end
         if settings.name_identifier_format != nil
-          root.add_element "samlp:NameIDPolicy", {
-              # Might want to make AllowCreate a setting?
-              "AllowCreate" => "true",
-              "Format" => settings.name_identifier_format
+          name_id_policy_attributes = {
+            "Format" => settings.name_identifier_format
           }
+
+          if settings.name_id_policy_allow_create
+            name_id_policy_attributes["AllowCreate"] = "true"
+          end
+
+          root.add_element "samlp:NameIDPolicy", name_id_policy_attributes
         end
 
         if settings.authn_context || settings.authn_context_decl_ref
